@@ -1,167 +1,186 @@
-<h3><a href="">Vary: Scaling up the Vision Vocabulary for Large Vision-Language Models</a></h3>
-<a href="https://varybase.github.io/"><img src="https://img.shields.io/badge/Project-Page-Green"></a>
-<a href="https://arxiv.org/abs/2312.06109"><img src="https://img.shields.io/badge/Paper-PDF-orange"></a> 
-<a href="http://region-31.seetacloud.com:22701/"><img src="https://img.shields.io/badge/demo-blue"></a> 
-<a href="https://zhuanlan.zhihu.com/p/671420712"><img src="https://img.shields.io/badge/zhihu-yellow"></a> 
+# M4Doc Reproduction Study
 
-<a href="https://trendshift.io/repositories/5978" target="_blank"><img src="https://trendshift.io/api/badge/repositories/5978" alt="Ucas-HaoranWei%2FVary | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+An independent experimental reproduction study of **M4Doc**, covering a text-only English-to-Chinese translation model, a Nougat-based multimodal baseline, and an M4Doc experiment using Vary-Toy.
 
-[Haoran Wei*](https://scholar.google.com/citations?user=J4naK0MAAAAJ&hl=en), Lingyu Kong*, Jinyue Chen, Liang Zhao, [Zheng Ge](https://joker316701882.github.io/), [Jinrong Yang](https://yancie-yjr.github.io/), [Jianjian Sun](https://scholar.google.com/citations?user=MVZrGkYAAAAJ&hl=en), Chunrui Han, [Xiangyu Zhang](https://scholar.google.com/citations?user=yuB-cfoAAAAJ&hl=en)
-	
+> **Status:** Experiments concluded. This is a partial reproduction study, **not** a verified reproduction of all results reported in the paper. Reported-paper values below are transcribed from the author's research notes and have not been independently checked against the publication.
 
+## Overview
 
-<p align="center">
-<img src="assets/logo.jpg" style="width: 200px" align=center>
-</p>
+The project explored whether the available methodological information was sufficient to reproduce reported results. The study included:
 
-## Release
-- [2024/12/24] 🔥🔥🔥 My new work on system-2 perception is released [slow-perception](https://github.com/Ucas-HaoranWei/Slow-Perception).
-- [2024/9/03] 🔥🔥🔥 We release a very strong and comprehensive OCR model [GOT-OCR2.0](https://github.com/Ucas-HaoranWei/GOT-OCR2.0).
-- [2024/7/16] 🎉🎉🎉 [OneChart](https://github.com/LingyvKong/OneChart) is accepted by ACM'MM 2024 oral (3.97%)!
-- [2024/7/2] 🔥🔥🔥 Vary is accepted by ECCV2024. To thank everyone for their attention, I will release a model that performs on par with the Vary-document soon.
-- [2024/5/27] 🔥🔥🔥 We present a document understanding benchmark in [Fox](https://github.com/ucaslcl/Fox) .
-- [2024/5/24] 🔥🔥🔥 We propose a multi-page document understanding work -- [Fox](https://arxiv.org/abs/2405.14295), which supports 8-page pdf-image input !!!
-- [2024/4/21] 🔥🔥🔥 For OneChart, we have released the web demo in [Project Page](https://onechartt.github.io/). Have fun!!
-- [2024/4/21] 🔥🔥🔥 We present a Vary-tiny LAVIS codebase (for training from scratch) and the Vary-600k dataset (300K English and 300K Chinese pages) [here](https://github.com/Ucas-HaoranWei/Vary-tiny-600k) !!!
-- [2024/4/15]🔥🔥🔥We release a chart parsing model OneChart [here](https://github.com/LingyvKong/OneChart).
-- [2024/4/12]🔥🔥🔥We will release a chart parsing model based on Vary-tiny next week. The model supports both English and Chinese charts.
-- [2024/3/16]🔥🔥🔥I found many friends very interested in Vary-tiny(OPT-125M), so I opened source it [here](https://huggingface.co/HaoranWei/Vary-tiny-opt125M/tree/main), a PDF-dense OCR and object detection version.
-- [2023/1/23]🔥🔥🔥We release the Vary-toy [here](https://github.com/Ucas-HaoranWei/Vary-toy). Besides, we show the super good Vary-family results [here](https://github.com/Ucas-HaoranWei/Vary-family).
-- [2023/12/29]🔥🔥🔥We will release a new model (a small-size Vary, about 2B) at the beginning of next month and introduce a new feature (object detection). Our online demo will be temporarily closed to prepare for the deployment of the new model.
-- [2023/12/11] We released the online demo, have fun! 
-- [2023/12/11] We released the codes of Vary (train and inference)! 
+1. Pretraining a text-only English-to-Chinese translation model on the UN Parallel Corpus, followed by fine-tuning on DoTA.
+2. Constructing and training a baseline with a Nougat encoder, projection layer, and text-only decoder.
+3. Experimenting with an M4Doc architecture using a frozen Vary-Toy MLLM encoder, semantic and Nougat encoders, projection/alignment layers, and a pretrained EN-to-ZH translation decoder.
 
-[![Code License](https://img.shields.io/badge/Code%20License-Apache_2.0-green.svg)](https://github.com/tatsu-lab/stanford_alpaca/blob/main/LICENSE)
-[![Data License](https://img.shields.io/badge/Data%20License-CC%20By%20NC%204.0-red.svg)](https://github.com/tatsu-lab/stanford_alpaca/blob/main/DATA_LICENSE)
-**Usage and License Notices**: The data, code, and checkpoint are intended and licensed for research use only. They are also restricted to use that follow the license agreement of LLaMA, Vicuna, GPT-4, Qwen, and LLaVA. 
+The original implementation and some experimental details were not available to the researcher, so parts of the pipeline and training configuration were reconstructed. Differences from the reported results should not be attributed to any single cause without further controlled experiments.
 
+## Dataset and evaluation
 
-## Contents
-- [Install](#install)
-- [Vary Weights](#vary-weights)
-- [Demo](#Demo)
-- [Train](#train)
+- **UN Parallel Corpus (English–Chinese):** text-only pretraining.
+- **DoTA:** fine-tuning and multimodal experiments. The dataset was received via Hugging Face, with access confirmed by email.
+- **Metrics recorded:** BLEU, BLEU-PT, STEDS, training loss, and evaluation loss.
 
-## Install
-1. Clone this repository and navigate to the Vary folder
-```bash
-git clone https://github.com/Ucas-HaoranWei/Vary.git
-cd Vary
-```
-2. Install Package
-```Shell
-conda create -n vary python=3.10 -y
-conda activate vary
-pip install e .
-```
+DoTA fine-tuning notes list **124,338 training samples** and **1,004 validation samples**. Dataset access and redistribution rights should be checked before publishing any data.
 
-3. Install Flash-Attention
-```
-pip install ninja
-pip install flash-attn --no-build-isolation
-```
+## Results at a glance
 
-## Vary Weights
-- If you are in urgent need of weights for your research recently, please contact me by email. 
-- Download the CLIP-VIT-L in [Hugging Face](https://huggingface.co/openai/clip-vit-large-patch14/tree/main)
-- [Here](https://github.com/Ucas-HaoranWei/Vary-toy) for Vary-toy weights. 
-  
-## Demo
-1. Update the CLIP-VIT path in the codes (/home/pj24001974/ku60000761/project/test_project/models/vit-large-patch14/) to your path.
+| Experiment | Checkpoint | BLEU | BLEU-PT | STEDS |
+|---|---:|---:|---:|---:|
+| Text-only, reported in paper | — | 47.61 | 54.16 | 92.89 |
+| Text-only, reproduced | 9,000 | 31.64 | 33.18 | *see note* |
+| Text-only, reproduced | 38,000 | 44.37 | 48.45 | *see note* |
+| Text-only, reproduced | 48,000 | 44.90 | 49.60 | *see note* |
+| Text-only, reproduced | 78,000 | 45.05 | 47.16 | 80.75 |
+| Nougat-based baseline, reported in paper | — | 37.60 | 61.52 | 83.08 |
+| Nougat-based baseline, reproduced | 47,750 | 42.64 | 42.78 | 87.75 |
 
-2.
-```Shell
-python vary/demo/run_qwen_vary.py  --model-name  /vary/model/path/ --image-file /an/image/file.png
-```
-## Train
-- We currently do not plan to open source the weights of the intermediate.
-- However, we release the train codes. So you can train on your own dataset.
-If you want to do this, you can try this:
-1. For Vary-base (one machine, if you have multiple machines you need to prepare your host file)
-```Shell
-deepspeed   Vary/train/train_qwen_vary.py  --deepspeed /Vary/zero_config/zero2.json
-            --model_name_or_path /Qwen-7B/path/
-            --vision_tower /vit-large-patch14/path/
-            --freeze_vision_tower True
-            --freeze_lm_model False
-            --vision_select_layer  -2
-            --use_im_start_end True
-            --bf16 True
-            --per_device_eval_batch_size 4
-            --gradient_accumulation_steps 1
-            --evaluation_strategy "no"
-            --save_strategy "steps"
-            --save_steps 5000
-            --save_total_limit 1
-            --weight_decay 0.
-            --warmup_ratio 0.03
-            --lr_scheduler_type "cosine"
-            --logging_steps 1 --tf32 True
-            --model_max_length 4096
-            --gradient_checkpointing True
-            --dataloader_num_workers 4
-            --report_to none
-            --per_device_train_batch_size 4
-            --num_train_epochs 1
-            --learning_rate 5e-5
-            --datasets  data_name1+data_name2+data_name3
-            --output_dir /path/to/output/
-```
-2. For Vary-tiny
-```Shell
-deepspeed   Vary/train/train_opt.py  --deepspeed /Vary/zero_config/zero2.json
-            --model_name_or_path /opt125m/path/
-            --conversation_version opt
-            --freeze_vision_tower False
-            --freeze_lm_model False
-            --use_im_start_end True
-            --bf16 True
-            --per_device_eval_batch_size 4
-            --gradient_accumulation_steps 1
-            --evaluation_strategy "no"
-            --save_strategy "steps"
-            --save_steps 5000
-            --save_total_limit 1
-            --weight_decay 0.
-            --warmup_ratio 0.03
-            --lr_scheduler_type "cosine"
-            --logging_steps 1 --tf32 True
-            --model_max_length 4096
-            --gradient_checkpointing True
-            --dataloader_num_workers 4
-            --report_to none
-            --per_device_train_batch_size 16
-            --num_train_epochs 1
-            --learning_rate 5e-5
-            --datasets  data_name1+data_name2+data_name3
-            --output_dir /path/to/output/
-```
+**STEDS evaluation caveat:** Early text-only evaluations at checkpoints 9,000, 38,000, and 48,000 all showed STEDS **29.24**. The researcher traced this repeated value to a decoder that flattened or removed `\n\n` formatting. Those early STEDS values are therefore omitted from the comparison as unreliable; the later checkpoint-78,000 value is recorded separately. The notes do not establish whether all other evaluation differences were resolved.
 
+## 1. Text-only model
 
-## Contact
-If you have any questions related to the code or the paper, feel free to email (`weihaoran18@mails.ucas.ac.cn`).
+### 1.1 Pretraining on UN Parallel Corpus (En–Zh)
 
-## Acknowledgement
-- [LLaVA](https://github.com/lm-sys/FastChat): the codebase we built upon!
-- [Qwen](https://github.com/QwenLM/Qwen): the LLM base model of Vary, which is good at both English and Chinese!
+The notes reference the text-only MT approach of *Attention Is All You Need* (Vaswani et al., 2017). The specified settings available to the researcher were **100,000 maximum steps**, **7e-5 learning rate**, **4,096 maximum tokens per batch**, and **0.05 warmup ratio**. Other unspecified choices were made by reference to that paper; they should not be interpreted as confirmed M4Doc settings.
 
+| Setting | Recorded value |
+|---|---|
+| Dataset | UN Parallel Corpus (English–Chinese) |
+| Optimizer | AdamW |
+| Scheduler | Linear |
+| Learning rate | 7e-5 |
+| Maximum training steps | 100,000 |
+| Warmup ratio | 0.05 |
+| Global / per-GPU batch size | 16 / 4 |
+| GPUs / gradient accumulation | 4 / 1 |
+| Precision | BF16 |
+| Model max length / data max length | 2,048 / 512 |
+| Initial / final training loss | ~10 / ~7 |
+| Recorded training time | ~1 h 36 min |
 
+An evaluation recorded **BLEU 0.13**, **BLEU-PT 0.02**, and **STEDS 29.24**. An example output repeated the Chinese character `的` rather than generating a useful translation. A separate learning-rate experiment at **1e-4** took approximately **1 h 36 min**; the final loss and comparable evaluation metrics were not recorded in the supplied notes.
 
+Evidence: [pretraining evaluation](https://gyazo.com/e762b4d6300007c96c0b31aa1334a78f), [additional run screenshot](https://gyazo.com/e7150191ec137cc8f568edc0d9217007), [1e-4 run screenshot 1](https://gyazo.com/44f18ba123466d687ea4cd963738413f), [1e-4 run screenshot 2](https://gyazo.com/89972ac9b1f76214a6e98495dc3ff18d).
 
-## Citation
-If you find our work useful in your research, please consider citing Vary:
-```bibtex
-@article{wei2023vary,
-  title={Vary: Scaling up the Vision Vocabulary for Large Vision-Language Models},
-  author={Wei, Haoran and Kong, Lingyu and Chen, Jinyue and Zhao, Liang and Ge, Zheng and Yang, Jinrong and Sun, Jianjian and Han, Chunrui and Zhang, Xiangyu},
-  journal={arXiv preprint arXiv:2312.06109},
-  year={2023}
-}
+### 1.2 Fine-tuning on DoTA
 
-@article{wei2024small,
-  title={Small Language Model Meets with Reinforced Vision Vocabulary},
-  author={Wei, Haoran and Kong, Lingyu and Chen, Jinyue and Zhao, Liang and Ge, Zheng and Yu, En and Sun, Jianjian and Han, Chunrui and Zhang, Xiangyu},
-  journal={arXiv preprint arXiv:2401.12503},
-  year={2024}
-}
-```
+| Setting | Recorded value |
+|---|---|
+| Starting checkpoint | UN-pretrained text-only model |
+| Dataset | DoTA |
+| Training / validation samples | 124,338 / 1,004 |
+| Epochs | ~38 |
+| Steps | ~74,000 |
+| Learning rate | 5e-5 |
+| Maximum sequence length | 1,536 |
+| Batch size | 64 |
+| Precision | BF16 |
+| Initial / final train loss | ~8 / 0.4328 |
+| Final validation loss | 0.4834 |
+
+An earlier log at **25 epochs / 48,550 steps** recorded train loss **0.5779**, evaluation loss **0.5747**, and approximately **7.4 hours** of training. The notes suggest training could potentially have stopped around 50,000 steps; this was an observation, not a validated stopping-point study.
+
+The text-only benchmark comparison appears in the results table above.
+
+Evidence: [fine-tuning screenshot 1](https://gyazo.com/f2879a34465f15733c59f22757c9de4c), [fine-tuning screenshot 2](https://gyazo.com/fc5edac26f743d20bce61e43fd4c4a33).
+
+## 2. Nougat-based baseline
+
+Architecture: **Nougat encoder → projection layer → text-only decoder**.
+
+| Setting | Recorded value |
+|---|---|
+| Dataset | DoTA |
+| GPUs | 4 |
+| Maximum sequence length | 1,536 |
+| Maximum training steps | 100,000 |
+| Initial learning rate | 5e-5 |
+| Scheduler / warmup | Linear / 1,000 steps |
+| Weight decay | 0.01 |
+| Per-GPU batch size | 4 |
+| Gradient accumulation | 8 |
+| Effective global batch | 128 |
+| Optimizer | AdamW |
+| Precision / TF32 | BF16 / enabled |
+| Gradient checkpointing | Enabled |
+| Logging interval | 10 steps |
+| Initial / final training loss | 6.393 / 0.6912 |
+| Evaluation loss | 0.7139 |
+| Logged learning rate at epoch 12.33 | 2.70445e-5 |
+| Recorded training time | ~24 hours |
+
+At **checkpoint 47,750**, the recorded evaluation was **BLEU 42.64**, **BLEU-PT 42.78**, and **STEDS 87.75**. Compared with the paper values transcribed in the notes, BLEU and STEDS were higher while BLEU-PT was lower. The researcher stopped this run without determining whether additional training would improve the overall comparison.
+
+Evidence: [baseline screenshot 1](https://gyazo.com/53df968552c2062b942a4ced72c0d379), [baseline screenshot 2](https://gyazo.com/56c12e857dc9798ce6f120f165e7dc52).
+
+## 3. M4Doc experiment with Vary-Toy
+
+**Important architectural limitation:** The notes indicate that the intended full M4Doc reproduction uses **Vary base**, while this experiment used **Vary-Toy**. Obtaining Vary base would have required reproducing the separate [Vary paper](https://github.com/Ucas-HaoranWei/Vary/blob/main/Vary_paper.pdf). Accordingly, the run below should **not** be presented as a faithful full M4Doc reproduction.
+
+Recorded architecture:
+
+- Frozen Vary MLLM encoder (teacher)
+- Semantic encoder
+- Nougat encoder
+- Projection / alignment layers
+- Pretrained English-to-Chinese translation decoder
+
+| Setting | Recorded value |
+|---|---|
+| Dataset | DoTA |
+| GPUs / machines | 4 / 1 |
+| Global / per-GPU batch size | 64 / 2 |
+| Gradient accumulation | 8 |
+| Maximum / completed steps | 30,000 / 30,000 |
+| Learning rate | 5e-5 |
+| Scheduler / warmup | Linear / 1,000 steps |
+| Optimizer | AdamW |
+| Precision | BF16 |
+| Evaluation / checkpoint interval | 1,000 steps each |
+| Dataloader workers | 16 |
+| MLLM encoder | Frozen |
+| KD loss weight | 1.0 |
+| Initial / final training loss | 6.3496 / 1.2789 |
+| Evaluation loss | 1.1708 |
+| Runtime | 19:36:02 |
+| Final logged KD loss | 0.1712 |
+| Final logged learning rate | 0.0 |
+| Final logged epoch | 15.44 |
+| Logged overall train loss | 1.7933 |
+
+**No BLEU, BLEU-PT, or STEDS values for this Vary-Toy run were provided in the notes.** The logged loss values alone cannot establish equivalence to the published M4Doc results.
+
+Evidence: [Vary-Toy training screenshot 1](https://gyazo.com/aa83accbd13a1489e44762721ed13551), [Vary-Toy training screenshot 2](https://gyazo.com/d5284e11a88ef529168f5dc4e0329ad2).
+
+## Reproducibility limitations and lessons
+
+- The researcher's notes state that original implementation code and some methodological details were unavailable, requiring an independently constructed pipeline and assumptions for unspecified settings.
+- Pretraining at the initially recorded learning rate produced poor sample translations; a separate learning-rate trial was performed, but its outcome is not fully documented in the notes.
+- An evaluation decoder flattened `\n\n` formatting, producing repeated, misleading STEDS scores until the issue was identified.
+- Text-only and Nougat-based baseline results did not consistently match the reported benchmark metrics.
+- The Vary-Toy experiment is not equivalent to the Vary-base configuration identified as necessary for the full M4Doc reproduction.
+
+These observations document an experimental attempt and its limitations; they do not independently demonstrate that the original paper's methods or reported results are incorrect.
+
+## Repository contents
+
+> Add links to actual source files, scripts, configuration files, and instructions once they are uploaded. Do not claim code is available until it is present in the repository.
+
+Suggested additions:
+
+- Training and evaluation scripts
+- Model configuration files and dependency versions
+- Instructions for preparing authorized datasets
+- Checkpoint-specific metric tables and sample outputs
+- Hardware and software environment details
+- Notes on newline handling in the STEDS evaluation pipeline
+
+Avoid committing private credentials, restricted datasets, or large checkpoints without confirming redistribution rights.
+
+## References and acknowledgments
+
+- M4Doc: add the full paper citation and official project URL.
+- Vaswani et al. (2017), *Attention Is All You Need*.
+- [Vary paper (repository PDF)](https://github.com/Ucas-HaoranWei/Vary/blob/main/Vary_paper.pdf).
+- DoTA dataset: add the official citation and permitted access link.
+
+This repository is an **independent study**, not an official M4Doc implementation.
