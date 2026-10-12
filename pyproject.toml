@@ -1,0 +1,120 @@
+[project]
+name = "nlp-singularity"
+version = "0.3.0"
+description = "Base package management file for nlp research using singularity"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "torch ==2.4.0+cu121; sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "torch ==2.4.0; sys_platform == 'darwin' or (sys_platform == 'linux' and platform_machine == 'aarch64')",
+    "torchvision ==0.19.0+cu121; sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "torchvision ==0.19.0; sys_platform == 'darwin' or (sys_platform == 'linux' and platform_machine == 'aarch64')",
+    "numpy <2.0.0",
+    "matplotlib >=3.9.1",
+    "seaborn >=0.13.2",
+    "plotly >=5.22.0",
+    "pandas >=2.2.2",
+    "polars >=1.1.0",
+    "scikit-learn >=1.5.1",
+    "scipy >=1.14.0",
+    "pillow >=10.4.0",
+    "sentencepiece >=0.2.0",
+    "nltk >=3.8.1",
+    "spacy >=3.7.5",
+    "tqdm >=4.66.4",
+    "wandb >=0.17.4",
+    "torchinfo >=1.8.0",
+    "torchviz >=0.0.2",
+    "transformers",
+    "openai >=1.35.14",
+    "datasets >=2.20.0",
+    "evaluate >=0.4.2",
+    "timm >=1.0.7",
+    "accelerate >=0.32.1; sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "peft >=0.11.1; sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "appdirs >=1.4.4",
+    "loralib >=0.1.2",
+    "py7zr >=0.21.1",
+    "bitsandbytes >=0.43.1; sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "hatchling >=1.22.5",
+    "editables >=0.5",
+    "wheel >=0.44.0",
+    "jsonargparse>=4.32.1",
+    "loguru>=0.7.2",
+    "pytest==7.1.3",
+    "eval-type-backport>=0.2.0",
+    "smart-open>=7.0.4",
+    "pytest-mock>=3.14.0",
+    "tiktoken>=0.7.0",
+    "tabulate>=0.9.0",
+    "vllm >=0.6.3; sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "sacrebleu==2.3.1",
+    "jieba==0.42.1",
+    "zss==1.2.0",
+]
+
+[tool.uv.sources]
+transformers = { git = "https://github.com/huggingface/transformers.git" }
+
+[tool.uv]
+find-links = [
+    "https://download.pytorch.org/whl/cu121/torch",
+    "https://download.pytorch.org/whl/cu121/torchvision",
+]
+dev-dependencies = [
+    "flash-attn >=2.6.3; sys_platform == 'linux' and platform_machine == 'x86_64'",
+    "jupyterlab>=4.2.5",
+    "mypy>=1.11.2",
+    "pre-commit>=3.8.0",
+    "ruff>=0.6.6",
+]
+
+[tool.ruff]
+exclude = [".git", ".mypy_cache", ".ruff_cache", ".venv", "third_party"]
+line-length = 160
+target-version = "py311"
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+unfixable = []
+select = [
+    "A",  # flake8-builtin
+    "B",  # flake8-bugbear
+    "E",  # pycodestyle error
+    "F",  # Pyflakes
+    "I",  # isort
+    "N",  # pep8-naming
+    "W",  # pycodestyle warning
+    "PL",  # Pylint
+    "UP",  # pyupgrade
+]
+ignore = [
+    "B905",  # Zip-without-explicit-strict
+    "E501",  # Line too long, handled by black
+    "F401",  # module imported but unused
+    "F403",  # Unable to detect undefined names
+    "N812",  # Lowercase imported as non-lowercase
+    "N999",  # Invalid module name
+    "UP035",  # Checks for uses of deprecated imports based on the minimum supported Python version.
+    "PLR0912",  # Too many branches
+    "PLR0913",  # Too many arguments in function definition
+    "PLR0915",  # Too many statements in function
+    "PLR2004",  # Magic value used in comparison
+]
+
+[tool.ruff.lint.pyupgrade]
+keep-runtime-typing = true  # Settings for Python 3.8 compatibility
+
+[tool.ruff.format]
+quote-style = "double"
+line-ending = "auto"
+
+[tool.mypy]
+show_error_context = true
+show_column_numbers = true
+ignore_missing_imports = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+warn_return_any = true
+warn_unused_ignores = true
+warn_redundant_casts = true

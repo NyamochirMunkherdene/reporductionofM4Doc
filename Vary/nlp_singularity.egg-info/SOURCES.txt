@@ -1,0 +1,7 @@
+README.md
+pyproject.toml
+nlp_singularity.egg-info/PKG-INFO
+nlp_singularity.egg-info/SOURCES.txt
+nlp_singularity.egg-info/dependency_links.txt
+nlp_singularity.egg-info/requires.txt
+nlp_singularity.egg-info/top_level.txt

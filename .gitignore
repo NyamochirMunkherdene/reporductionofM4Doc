@@ -1,0 +1,91 @@
+# Log files
+*.log
+*.out
+logs/
+
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+
+
+# Virtual environments
+.venv/
+Vary/.venv/
+Vary/.venv/.env
+
+# Python caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Hugging Face
+.cache/
+.huggingface/
+
+# Logs
+*.log
+wandb/
+runs/
+outputs/
+
+# Model checkpoints
+checkpoints/
+checkpoint*/
+*.ckpt
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# Downloaded pretrained models
+models/
+M4Doc/pretrained_models/
+
+# Dataset
+M4Doc/DoTA_dataset/
+
+# Temporary evaluation outputs
+predictions/
+results/
+evaluation/
+eval_results/
+generated/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local requirement dump
+vary-requirements.txt
+Vary-toy-backup.tar.gz
+
+# Generated outputs
+M4Doc/results/
+M4Doc/logs/
+
+# Trained checkpoints
+M4Doc/models/
+
+#vary datasets
+project/test_project/Vary/Vary-master/vary/dataset
+
+
+# Large pretrained model files
+M4Doc/utils/clip-vit-large-patch14/*.h5
+M4Doc/utils/clip-vit-large-patch14/*.msgpack
+
+# Other large training artifacts
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+checkpoints/
+wandb/
+
+/Vary-toy/
